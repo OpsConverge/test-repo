@@ -43,7 +43,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install pytest pytest-html
+          pip install pytest pytest-html pytest-junit
       
       - name: Run pytest
         run: |
