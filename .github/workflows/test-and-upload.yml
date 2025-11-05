@@ -1,0 +1,73 @@
+name: CI - Tests and artifacts
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create artifacts dir
+        run: mkdir -p artifacts junit
+
+      # Node / Jest
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Node deps
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+      - name: Run Jest (JSON + junit via jest-junit)
+        env:
+          JEST_JUNIT_OUTPUT: artifacts/jest-junit.xml
+        run: |
+          mkdir -p artifacts
+          npx jest --runInBand --json --outputFile=artifacts/jest-results.json || true
+
+      # Python / pytest
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python deps
+        run: python -m pip install --upgrade pip pytest
+
+      - name: Run pytest with JUnit XML output
+        run: |
+          mkdir -p artifacts
+          pytest tests_py --junitxml=artifacts/pytest-results.xml || true
+
+      # Java / Maven (JUnit)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Run Maven tests (Surefire -> JUnit XML)
+        run: |
+          cd java-tests
+          mvn -B -q test || true
+          mkdir -p ../artifacts/junit
+          if [ -d target/surefire-reports ]; then
+            cp target/surefire-reports/*.xml ../artifacts/junit/ || true
+          fi
+
+      - name: List artifacts
+        run: ls -R artifacts || true
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            artifacts/**/*.xml
+            artifacts/**/*.json
