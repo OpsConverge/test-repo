@@ -1,0 +1,84 @@
+name: Run Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # JavaScript/TypeScript Tests (Jest)
+  jest-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Jest tests
+        run: npm test
+      
+      - name: Upload Jest test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: jest-test-results
+          path: artifacts/jest-junit.xml
+          retention-days: 30
+
+  # Python Tests (Pytest)
+  pytest-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-html
+      
+      - name: Run pytest
+        run: |
+          mkdir -p artifacts
+          pytest tests_py/ --junit-xml=artifacts/pytest-results.xml --html=artifacts/pytest-report.html
+      
+      - name: Upload pytest results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-test-results
+          path: artifacts/pytest-*.xml
+          retention-days: 30
+
+  # Java Tests (Maven)
+  maven-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      
+      - name: Run Maven tests
+        working-directory: ./java-tests
+        run: mvn clean test
+      
+      - name: Upload JUnit test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-test-results
+          path: java-tests/target/surefire-reports/*.xml
+          retention-days: 30
+
