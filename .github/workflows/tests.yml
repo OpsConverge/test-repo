@@ -24,7 +24,7 @@ jobs:
       
       - name: Upload Jest test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jest-test-results
           path: artifacts/jest-junit.xml
@@ -52,7 +52,7 @@ jobs:
       
       - name: Upload pytest results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pytest-test-results
           path: artifacts/pytest-*.xml
@@ -76,7 +76,7 @@ jobs:
       
       - name: Upload JUnit test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: junit-test-results
           path: java-tests/target/surefire-reports/*.xml
