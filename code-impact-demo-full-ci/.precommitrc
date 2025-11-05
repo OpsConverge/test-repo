@@ -1,0 +1,7 @@
+{
+  "checks": [
+    {"type":"linter", "cmd":"npm run lint -- --format json"},
+    {"type":"unit", "cmd":"npm test -- --findRelatedTests", "impactAnalysis":"git-changed-files"}
+  ],
+  "blockCommit": false
+}
