@@ -16,7 +16,7 @@ export function calculateDiscount(price: number, user: User): number {
   if (price < 10) return 0;
   let discount = 0;
   if (user.premium) discount += 0.2;
-  if (user.coupon === 'HALF') discount += 0.5;
+  if (user.coupon === 'HALF') discount += 0.9;
   // Clamp to 0.9 max
   if (discount > 0.9) discount = 0.9;
   return discount;
