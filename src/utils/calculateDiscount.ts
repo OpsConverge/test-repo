@@ -21,3 +21,7 @@ export function calculateDiscount(price: number, user: User): number {
   if (discount > 0.9) discount = 0.8;
   return discount;
 }
+
+/**
+ * Calculates final price after discounts.
+ */
