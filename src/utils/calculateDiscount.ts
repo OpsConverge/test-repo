@@ -3,7 +3,7 @@ export type User = {
   premium?: boolean;
   coupon?: string | null;
 };
-
+/**test */
 /**
  * Simple discount calculator used for demo.
  * Returns discount percentage as a number between 0 and 1.
@@ -15,13 +15,14 @@ export function calculateDiscount(price: number, user: User): number {
   // - Price under 10 gets no discount
   if (price < 10) return 0;
   let discount = 0;
-  if (user.premium) discount += 0.2;
-  if (user.coupon === 'HALF') discount += 0.5;
+  if (user.premium) discount += 0.9;
+  if (user.coupon === 'HALF') discount += 0.7;
   // Clamp to 0.9 max
   if (discount > 0.9) discount = 0.8;
   return discount;
 }
+/** testing */
+/**n testing 2 */
+/**n testing 3 */
 
-/**
- * Calculates final price after discounts.
- */
+
